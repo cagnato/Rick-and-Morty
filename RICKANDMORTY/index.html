@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2vh;
+            width: 100vw;
+            height: auto;
+            padding: 1em;
+            overflow-x: hidden;
+            background-image: url(./imagens/back-teste-3.jpg);
+            background-attachment: fixed;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        label{
+            color: azure;
+        }
+        #container{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2vw;
+            height: auto;
+        }
+        .card{
+            background-color: #9ca1a5cb;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem; /* Espaçamento entre os elementos dentro do card */
+        }
+
+        .div-style{
+            border-radius: 100%;
+        }
+    </style>
+</head>
+<body>
+    <img src="./imagens/rick-and-morty.png" alt="logo" width="500px" height="auto">
+    <div>
+        <label for="pageInpunt">Digite uma página (1/42)</label>
+        <input type="text" id="pageInput">
+        <button onclick="fetchCharacters()">Mostrar personagens</button>
+    </div>
+
+    <div>
+    <label for="nameInput">Buscar por nome</label>
+    <input type="text" id="nameInput">
+    <button onclick="searchByName()">Buscar</button>
+    </div>
+    <div id="container"></div>
+
+<script>
+    async function fetchCharacters(){
+        const page = document.getElementById("pageInput").value || 1;
+
+        const apiUrl = `https://rickandmortyapi.com/api/character/?page=${page}`
+
+        try{
+            const response = await fetch(apiUrl);
+            const data = await response.json()
+            displayCharacters(data.results)
+        }catch (error){
+            console.error("Erro ao buscar personagens - ", error)
+        }
+    }
+
+    function displayCharacters(characters){
+        const container = document.getElementById("container");
+        container.innerHTML = "";
+        
+        characters.forEach(character => {
+            const card = document.createElement("div")
+            card.className = "card"
+
+            const name = document.createElement("h3")
+            name.textContent = character.name;
+
+            const species = document.createElement("p")
+            species.textContent = `Species: ${character.species}`
+
+            const image = document.createElement("img");
+            image.className  = "image-style"
+            image.src = character.image;
+            image.alt = character.name;
+            image.style.width = "200px";
+      
+            
+
+            const status = document.createElement("p")
+            status.textContent = character.status
+            
+  
+
+            card.appendChild(name)
+            card.appendChild(species)
+            card.appendChild(image)
+            card.appendChild(status)
+
+
+
+
+            container.appendChild(card)
+        })
+ 
+         
+    }
+    
+    function searchByName(){
+    const searchTerm = document.getElementById("nameInput").value.toLowerCase();
+    const characters = document.querySelectorAll(".card");
+
+    characters.forEach((character) => {
+        const characterName = character.querySelector("h3").textContent.toLowerCase();
+        if(characterName.includes(searchTerm)){
+            character.style.display = "flex"; // Ajusta apenas a visibilidade
+        }else{
+            character.style.display = "none";
+        }
+    })
+}
+
+</script>
+</body>
+</html>
